@@ -2,7 +2,7 @@
 Materials for Pol Sci 6, Introduction to Data Analysis, offered in 2024 Fall at UCLA.
 
 ## TA Section Notes
-We will rely on the [Section Notes](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/7-RDD/RDD.html) to go over class materials. 
+We will rely on the [Section Notes](https://htmlpreview.github.io/?https://github.com/haotianchen/ps6/blob/main/notes.html) to go over class materials. 
 
 ## TA Section Schedule (Fridays)
 **Location**: **Zoom**. Please use this Zoom link: https://ucla.zoom.us/j/92902161338. <br />
