@@ -1,0 +1,16 @@
+---
+title: "Pol Sci 6 Section Notes"
+author: "Barney Chen"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Introduction to Data Analysis
+This class heavily relies on the interactive online textbook, CourseKata. To successfully run any code you learn in class, you need to load the `coursekata` package first. Remember to run this line of code at the top of any script you write in this class.
+```{r message=FALSE, warning=FALSE}
+library(coursekata)
+```
+
+Otherwise, you will get an error message that says `could not find function...`.
+
+## Load a dataset
