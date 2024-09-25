@@ -5,12 +5,349 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-## Introduction to Data Analysis
-This class heavily relies on the interactive online textbook, CourseKata. To successfully run any code you learn in class, you need to load the `coursekata` package first. Remember to run this line of code at the top of any script you write in this class.
+This class heavily relies on the interactive online textbook, CourseKata. To successfully run any code you learn in class, you need to load the `coursekata` package first. Remember to run this line of code at the top of any script you write in this class!!
 ```{r message=FALSE, warning=FALSE}
-library(coursekata)
+library(coursekata) # run install.packages("coursekata") on a new machine
 ```
 
 Otherwise, you will get an error message that says `could not find function...`.
 
-## Load a dataset
+# Part I - Exploratory Data Analysis
+
+## Inspect Your Data
+
+### Load a Dataset
+We will work on a sample of the US population data, `mydata`, from the Census. First, use `read.csv()` to load the data from a CSV file.
+
+```{r eval=FALSE}
+mydata <- read.csv("link_to_my_dataframe.csv")
+```
+
+```{r include=FALSE}
+income <- read.table('https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data', 
+                    sep = ',', fill = F, strip.white = T)
+
+colnames(income) <- c('age', 'workclass', 'fnlwgt', 'education', 
+                     'education-num', 'marital_status', 'occupation', 'relationship', 'race', 'sex', 
+                     'capital_gain', 'capital_loss', 'hours_per_week', 'native_country', 'income_level')
+
+set.seed(123)
+mydata <- income %>%
+  mutate(income = case_when(
+    income_level == "<=50K" ~ rlnorm(n(), meanlog = log(30000), sdlog = 0.2),
+    income_level == ">50K" ~ rlnorm(n(), meanlog = log(85000), sdlog = 0.4)))
+
+mydata <- mydata %>%
+  mutate(education_level = case_when(
+    education %in% c("1st-4th", "5th-6th", "7th-8th", "9th", "10th", "11th", "12th", "Preschool") ~ "No HS Diploma",
+    education %in% c("HS-grad", "Some-college", "Assoc-acdm", "Assoc-voc") ~ "High School",
+    education %in% c("Bachelors") ~ "Bachelors",
+    education %in% c("Masters", "Prof-school") ~ "Masters", 
+    education %in% c("Doctorate") ~ "Doctorate")) %>% 
+  select(age, education_level, sex, native_country, income) %>% 
+  rename(education = education_level) %>% 
+  mutate(income = round(income)) %>% 
+  mutate(education = as.factor(education), sex = as.factor(sex), native_country = as.factor(native_country)) %>% 
+  mutate(income = as.character(income)) %>% 
+  rename(gender = sex)
+```
+
+After loading the dataset, you can inspect it by using functions like `head()`, `str()`, `glimpse()`, or `summary()`.    
+
+```{r}
+head(mydata) # gives you the first several rows
+str(mydata) # gives you the structure of the data
+summary(mydata) # gives you the summary statistics of the data
+```
+
+### Recode a Variable
+Using common sense, `education`, `sex`, and `native_country` should be categorical variables. `age` and `income` should be quantitative. Yet from `str()` we see that `income` is mistakenly coded as characters. Let's convert it to a numeric variable. Recall that, to call a variable in R, you need to use the `$` sign: `data$variable`.
+
+```{r}
+mydata$income <- as.numeric(mydata$income)
+class(mydata$income) # it is now numeric
+```
+
+In R, `recode()` is a quick way to recode a variable. For example, we can recode the "?" values in `native_country` to "NA" (missing in R).
+
+```{r}
+mydata$native_country <- recode(mydata$native_country, "?"= NA_character_) # old_value = new_value
+```
+
+### Create a New Variable
+Let's create a new variable to record the income level (categorical) based on the `income` variable. There are several ways to do this. 
+
+```{r}
+mydata$is_low_income <- mydata$income < 50000 # we create a new variable `is_low_income`, which is TRUE if `income` <30000 and FALSE otherwise. 
+
+mydata$income_level <- ifelse(mydata$income > 50000, "high", "low") # we create a new variable `income_level`, which is "high" if `income` > 50000 and "low" otherwise. 
+
+mydata$income_group <- factor(ntile(mydata$income, 3), labels = c("low", "medium", "high")) # we create a new variable `income_group`, which divides people into 3 groups, based on the distribution of `income`: low, medium, and high. 
+
+# now let's check the new variables we created.
+head(mydata, 10)
+```
+
+### Filter Data
+Sometimes we need to filter the data to focus on a specific group. For example, we can filter the data to exclude observations with missing `native_country`. 
+
+```{r}
+mydata_noNA <- mydata %>% filter(native_country != "NA") # we use `filter()` to exclude observations with missing `native_country`.
+
+mydata_noNA <- mydata %>% filter(!is.na(native_country)) # an easier way to do it
+```
+
+Similarly, we can filter the data to include only observations with `income` > $50000. The `%>%` sign is a pipe operator that passes the result of the previous command to the next command.
+
+```{r}
+mydata_high_income <- mydata %>% filter(income > 50000)
+head(mydata_high_income)
+```
+
+Sometimes we only need a subset of the data. We can use the `sample()` function to randomly select a subset of the data.
+
+```{r}
+sample1 <- sample(mydata, 100, replace = FALSE) # without replacement
+nrow(sample1)
+```
+
+## Examining the Distribution of a Variable
+Before you examine the distribution of a variable, you need to know whether it is **categorical** or **quantitative** (numerical).
+
+### Distribution of a Categorical Variable
+For a categorical variable (such as gender, color, political affiliation), we use `tally()` to get a frequency table, `gf_bar` to get a bar plot, or `gf_percents` to get a percentage plot. 
+
+```{r}
+tally(mydata$education) # gives you the frequency of each category.
+
+tally(mydata$education, format = "percent") # gives you the percentage of each category.
+
+gf_bar(~education, data = mydata) # creates a bar plot: y-axis is the count.
+
+gf_percents(~education, data = mydata) # creates a percent plot: y-axis is the percentage.
+```
+
+### Distribution of a Quantitative Variable
+For a numerical variable (such as age, GDP, income), we can use `favstats()` to get its summary statistics, or create a density plot, histogram, or boxplot to visualize its distribution.
+
+What are the minimum, maximum, median, mean, IQR, and range of `income`?
+
+```{r}
+favstats(mydata$income)
+```
+
+Now we can visualize the distribution of `income`.
+
+```{r}
+gf_density(~income, data = mydata) # creates a density plot.
+
+gf_histogram(~income, data = mydata) # creates a histogram.
+
+gf_boxplot(~income, data = mydata) # creates a boxplot, which contains more details like median and range. 
+
+gf_boxplot(income ~ ., data = mydata) # creates a boxplot (vertical). The dot is a placeholder. 
+```
+
+The distribution is **skewed right**. Lots of people earn less than $50,000, and a small proportion of people earn much more.
+
+## Examining the Distribution of Two Variables
+
+### A Quantitative Variable and A Categorical Variable
+If we are interested in the distribution of a numerical variable (`income`) across different categories (`gender`): 
+
+```{r}
+favstats(income ~ gender, data = mydata) # gives you the summary statistics of `income` across different `gender`.
+```
+
+Visualizing the distribution of `income` across different `gender`:
+
+```{r}
+gf_histogram(~income, data = mydata) %>% gf_facet_grid(gender ~ .) # creates a histogram of `income` across different `gender`.
+
+gf_histogram(~income, fill = ~gender, data = mydata) # creates a histogram of `income` across different `gender`, with different colors.
+
+gf_boxplot(income ~ gender, data = mydata) # creates a boxplot of `income` across different `gender`.
+
+gf_jitter(income ~ gender, data = mydata) # creates a jitter plot of `income` across different `gender`.
+```
+
+Note that in this class, we will not cover the case the other way around (a categorical variable across different numerical variables).
+
+### Two Categorical Variables
+If we are interested in the distribution of two categorical variables, like `gender` and `education`:
+
+```{r}
+tally(gender ~ education, data = mydata) # gives you the frequency of each combination of `gender` and `education`.
+```
+
+```{r}
+gf_bar(~education, data = mydata) %>% gf_facet_grid(. ~ gender) # creates a bar plot of `education` across different `gender`.
+
+gf_percents(~education, data = mydata) %>% gf_facet_grid(. ~ gender) # creates a percentage plot of `education` across different `gender`.
+```
+
+### Two Quantitative Variables
+If we are interested in the relationship between two numerical variables, like `income` and `age`:
+
+```{r}
+gf_point(income ~ age, data = mydata) # creates a scatter plot of `income` and `age`.
+gf_point(log(income) ~ age, data = mydata) # creates a scatter plot of logged `income` and `age`. Note that the y-axis is now in log scale.
+gf_jitter(income ~ age, data = mydata) # creates a jitter plot of `income` and `age`.
+```
+
+# Part II - Regression Models
+
+## Empty Model
+The simplest model is the empty model, where we use the mean of a quantitative variable to model its distribution. In a word form: `Income = Mean + Error`. In a general linear model form: $\text{Income}_i = b_0 + e_i$.  
+
+```{r}
+# create a histogram of `income` and add a vertical line at the mean of `income`.
+gf_histogram(~income, data = mydata) %>% 
+  gf_vline(xintercept = ~mean, data = favstats(~income , data = mydata), color ="darkred") 
+
+# create an empty model
+empty_model <- lm(income ~ NULL, data = mydata)
+
+# Visualize the empty model prediction
+gf_histogram(~income, data = mydata) %>% gf_model(empty_model) # the same as the previous plot
+
+# get the predictions from the empty model
+mydata$empty_predicted <- predict(empty_model)
+
+# check your model, it only has one intercept, which equals the mean of `income`. 
+empty_model
+mean(mydata$income)
+
+# data_i = b_0 (mean) + error_i (residual)
+# to get the residuals
+mydata$empty_residuals <- resid(empty_model)
+mean(mydata$empty_residuals) # should be 0
+
+# calculate the SAD (sum of absolute deviations/residuals/errors)
+sum(abs(mydata$empty_residuals))
+
+# calculate the SSE (sum of squared errors)
+sum(mydata$empty_residuals^2)
+
+# calculate the variance (mean squared error; MSE)
+var(mydata$income) # var() function 
+sum(mydata$empty_residuals^2) / (nrow(mydata)-1) # variance = SSE/(n-1)
+
+# calculate the SD (standard deviation)
+sd(mydata$income) # sd() function
+sqrt(var(mydata$income)) # SD = sqrt(variance), the square root of the variance
+```
+
+## Simple Linear Model
+The simple linear model is a regression model with one predictor. We refer to the X as the **independent (The explanatory) variable** and Y as the **dependent (response)** variable.
+
+### Fit the Model
+First, let's explain variation in income using age, a continuous variable. In a word form: `Income = Age + Error`. In a general linear model form: $\text{Income}_i = b_0 + b_1*\text{Age}_i + e_i$ (plug in the estimated `b0` and `b1` we get).
+
+```{r}
+age_model <- lm(income ~ age, data = mydata) # explain income using age
+summary(age_model) # get the summary of the model
+b0(age_model) # get the intercept
+b1(age_model) # get the slope
+
+# let's create a scatter plot of `income` and `age`, and add the regression line.
+gf_point(income ~ age, data = mydata) %>% gf_model(age_model, color = "darkred")
+```
+
+What does the `b0` and `b1` mean here? The `b0` is the intercept, which is the predicted value of `income` when `age` is 0 (hypothetically speaking). The `b1` is the slope, which is the change in `income` per a one-unit change in `age`. Here it means, for each additional year of age, income increases by $`r b1(age_model)`.
+
+Second, let's explain variation in income using gender, a categorical variable. In a word form: `Income = Gender + Error`. In a general linear model form: $\text{Income}_i = b_0 + b_1*\text{Gender}_i + e_i$. 
+
+```{r}
+gender_model <- lm(income ~ gender, data = mydata) # explain income using gender
+summary(gender_model) # get the summary of the model
+# For a categorical variable, we have a reference level. Here, the reference level is Female. We can tell it from the summary output -- the slope is called `genderMale`. 
+b0(gender_model) # get the intercept
+b1(gender_model) # get the slope
+
+# let's create a histogram of `income` and `gender`, and add the regression line.
+gf_histogram(~income, data = mydata) %>% gf_facet_grid(gender ~ .) %>%
+  gf_model(gender_model) %>% # gender model: mean income for female and male, separately.
+  gf_model(empty_model, color = "darkred") # empty model: mean income for all.
+```
+
+What does the `b0` and `b1` mean here? The `b0` is the intercept, which is the mean `income` for the reference level (here it is Female). The `b1` is the slope, which is the difference in `income` between the reference level and the other level (here it is Male). Here it means, the average income of Male is $`r b1(gender_model)` higher than female. 
+
+### ANOVA Table
+We have "Total = Model + Error" in the ANOVA table. The `Model` is the variation in `income` explained by the model, and the `Error` is the variation in `income` not explained by the model. 
+
+```{r}
+supernova(age_model) # ANOVA table for the age model
+```
+
+* The 1st column, `SS`, refers to the **sum of squares**. For example, Sum of Squared Errors (SSE) is the `SS` value in the `Error` row, which is `r supernova(age_model)$tbl[2,3]`. 
+* The 2nd column, `df`, refers to the **degrees of freedom**, which depends on the number of observations and variables. 
+* The 3rd column, `MS`, refers to the **mean square**. `MS` is calculated by dividing `SS` by `df`: for example, `MSE = SSE/df_Error`.
+
+### Compare two Models
+Let's compare the Age model and Gender model using PRE and F-ratio. Let's also print out the ANOVA table for the gender model. 
+
+```{r}
+supernova(gender_model) # ANOVA table for the gender model
+```
+
+* The 4th column, `F`, refers to the **F-ratio**. It is calculated as `F = MS_Model / MS_Error`. It represents how much variation is explained by the model per degree of freedom (the variance explained by the model is `F-ratio` times larger than the leftover variance unexplained by the model). It can be higher than 1. We prefer model with **higher F-ratio**.
+* The 5th column, `PRE`, refers to the **PRE** (Proportional Reduction in Error). It is calculated as `PRE = SS_Model / SS_Total`. It measures how much variation in Y is explained by X (from 0 to 1), in other words, how much error is reduced. We prefer model with **higher PRE**. 
+
+### Inference
+A **sampling distribution** is a distribution of sample statistics, computed from randomly generated samples of the same size. We can use `shuffle()` or `resample` for the random data generating process (DGP):
+
+```{r}
+# shuffle the income: create a new empty model 
+mydata$shuffled_income <- shuffle(mydata$income) 
+summary(lm(shuffled_income ~ age, data = mydata)) # the new age model
+
+# shuffle the age variable
+sample_b1 <- b1(income ~ age, data = mydata)
+sdob1 <- do(100) * b1(income ~ shuffle(age), data = mydata) # a sample with 100 obs
+# alternatively: sdob1 <- do(100) * b1(income ~ age, data = resample(mydata))
+
+# how often do we get a b1 value as or more extreme as the sample b1?
+tally(sdob1$b1 > sample_b1 | sdob1$b1 < -sample_b1)
+
+# visualize it
+gf_histogram(~b1, data = sdob1)
+```
+
+Now, let's look at the summary of the age model again. What do these values mean?
+
+```{r}
+summary(age_model)
+```
+
+* `Estimate`: our `b0` and `b1` values, our estimated parameters. 
+* `Std. Error` stands for the **standard error**. It is the standard deviation of the sampling distribution of the parameter estimate. We have `SE = SD/sqrt(n)`.
+* `t value` is the standardized distance from 0 in the student t distribution. We have `t-value = Estimate / SE`. The larger the t-value, the more extreme the estimated coefficient is in the sampling distribution of an empty model.
+* `Pr(>|t|)` refers to the **p-value**, which is the probability of getting a parameter estimate as extreme or more extreme than the sample estimate given the assumption that the empty model is true (null hypothesis). We prefer a model with a lower p-value. 
+
+**Confidence Interval (CI)**: We know that in the normal distribution, 95% of the distribution is within 1.96 standard deviations. Therefore, for example, the lower bound of `b1` is `b1-1.96*SE`, and the upper bound of `b1` is `b1+1.96*SE`. To get the CI of `b0` and `b1` in R, we can run:
+
+```{r}
+confint(age_model) # get the 95% CI of the age model
+c(454.13 - 1.96 * 13.07, 454.13 + 1.96 * 13.07) # calculate the CI manually
+
+confint(age_model, level = 0.99) # get the 99% CI of the age model
+```
+
+From the first output, we are 95% confident that the true value of `b1` is between 428.5 and 479.7. It does not include 0, we may reject the null hypothesis with 95% confidence.
+
+## Multivariate Model
+The multivariate model is a regression model with multiple predictors. For example, it makes sense to explain variation in income using both age and gender. In a word form: `Income = Age + Education + Error`. In a general linear model form: $\text{Income}_i = b_0 + b_1*\text{Age}_i + b_2*\text{Gender}_i + e_i$.
+
+```{r}
+# explain income using age and education
+age_gender_model <- lm(income ~ age + gender, data = mydata) 
+summary(age_gender_model) 
+
+# we get b1 for `age`, and b2 for `genderMale`. How should we interpret these coefficients? 
+
+# get the ANOVA table
+supernova(age_gender_model)
+```
+
+Compared to the age model, the age+gender model has a lower F-ratio but a higher PRE. 
