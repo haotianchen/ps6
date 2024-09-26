@@ -239,7 +239,7 @@ sqrt(var(mydata$income)) # SD = sqrt(variance), the square root of the variance
 ```
 
 ## Simple Linear Model
-The simple linear model is a regression model with one predictor. We refer to the X as the **independent (The explanatory) variable** and Y as the **dependent (response)** variable.
+The simple linear model is a regression model with one predictor. We refer to the X as the **independent (explanatory) variable** and Y as the **dependent (response)** variable.
 
 ### Fit the Model
 First, let's explain variation in income using age, a continuous variable. In a word form: `Income = Age + Error`. In a general linear model form: $\text{Income}_i = b_0 + b_1*\text{Age}_i + e_i$ (plug in the estimated `b0` and `b1` we get).

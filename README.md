@@ -1,4 +1,4 @@
-# Pol Sci 6 Discussion Section 
+# Pol Sci 6 Discussion Section (Fridays)
 Materials for Pol Sci 6, Introduction to Data Analysis, offered in 2024 Fall at UCLA.
 
 > Finish CK Chapter 1 before the first lecture on Sep 26! 
@@ -23,7 +23,9 @@ We will rely on the [Section Notes](https://htmlpreview.github.io/?https://githu
 + 12/6: Final Exam Review. 
 
 ## TA Section Syllabus
-**Meeting Time and Location**: We will meet every Friday online. Please use this Zoom [link](https://ucla.zoom.us/j/92902161338). You have to attend the full 50-minute session to receive full credits. Please display your full name. 
+**Meeting Time and Location**: We will meet every Friday online. Please use this Zoom [link](https://ucla.zoom.us/j/92902161338). You have to attend the a full 50-minute session to receive full credits. Please display your full name. 
+
+> Note that you can choose the section that works best for you (you can choose one of the Friday Zoom Sections or a Thursday Section if you prefer in-person class). The in-person Thursday sections are scheduled: 5pm-5:50pm at Kaplan Hall A66, 6pm-6:50pm at Kaplan Hall A56, and 7pm-7:50pm at Kaplan Hall A40. Please be consistent throughout the quarter. 
 
 **Format**: During each section, we will quickly review the lecture materials in the first 10 minutes. We will then discuss any questions you may have about the Jupyter Notebook assignments, CK Chapters, or upcoming quizzes for the rest of the time. 
 
