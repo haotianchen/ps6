@@ -11,14 +11,14 @@ We will rely on the [Section Notes](https://htmlpreview.github.io/?https://githu
 
 **Time**: Every Friday. 12pm-12:50pm for Dis 1A, 1pm-1:50pm for Dis 1B, 2pm-2:50pm for Dis 1C. <br />
 + 9/27: NO section. 
-+ 10/4: Ch 1-3.
-+ 10/11: Ch 4-5.
-+ 10/18: Ch 6-7.
-+ 10/25: Ch 8.
-+ 11/1: Ch 9-10.
-+ 11/8: Ch 11.
-+ 11/15: Ch 12-13.
-+ 11/22: Ch 14.
++ 10/4: Ch 1-2.
++ 10/11: Ch 3-4.
++ 10/18: Ch 5-6.
++ 10/25: Ch 7.
++ 11/1: Ch 8-9.
++ 11/8: Review + Data Science in Real World
++ 11/15: Ch 10-11.
++ 11/22: Ch 12-13.
 + 11/29: Canceled! Happy Thanksgiving!
 + 12/6: Final Exam Review. 
 
