@@ -12,22 +12,20 @@ We will rely on the [Section Notes](https://htmlpreview.github.io/?https://githu
 **Location**: **Zoom**. Please use this Zoom link: https://ucla.zoom.us/j/92902161338.
 
 **Time**: Every Friday. 12pm-12:50pm for Dis 1A, 1pm-1:50pm for Dis 1B, 2pm-2:50pm for Dis 1C. <br />
-+ 9/27: NO section. 
++ 9/27: No section. 
 + 10/4: Ch 1-2.
 + 10/11: Ch 3-4.
-+ 10/18: Ch 5-6.
-+ 10/25: Ch 7.
-+ 11/1: Ch 8-9.
-+ 11/8: Review + Data Science in Real World
-+ 11/15: Ch 10-11.
++ 10/18: Ch 5.
++ 10/25: Ch 6-7.
++ 11/1: Ch 8.
++ 11/8: Ch 9-10.
++ 11/15: Ch 11.
 + 11/22: Ch 12-13.
 + 11/29: Canceled! Happy Thanksgiving!
 + 12/6: Final Exam Review. 
 
 ## TA Section Syllabus
-**Meeting Time and Location**: We will meet every Friday online. Please use this Zoom [link](https://ucla.zoom.us/j/92902161338). You have to attend the a full 50-minute session to receive full credits. Please display your full name. 
-
-> Note that you can choose the section that works best for you (you can choose one of the Friday Zoom Sections or a Thursday Section if you prefer in-person class). The in-person Thursday sections are scheduled: 5pm-5:50pm at Kaplan Hall A66, 6pm-6:50pm at Kaplan Hall A56, and 7pm-7:50pm at Kaplan Hall A40. Please be consistent throughout the quarter. 
+**Meeting Time and Location**: We will meet every Friday online. Please use this Zoom [link](https://ucla.zoom.us/j/92902161338). You have to attend the full 50-minute session to receive full credits. Please display your full name. 
 
 **Format**: During each section, we will quickly review the lecture materials in the first 10 minutes. We will then discuss any questions you may have about the Jupyter Notebook assignments, CK Chapters, or upcoming quizzes for the rest of the time. 
 
@@ -35,7 +33,7 @@ We will rely on the [Section Notes](https://htmlpreview.github.io/?https://githu
 + Attend the full 50 minutes (do not be late or leave early).
 + Display your full name.
 + Open your camera.
-+ Answer pop-up Zoom poll questions.   
++ Answer pop quiz questions.   
 
 **Communication**: My email address is: barneychen@ucla.edu. I will reply to your email within 24 to 48 hours (except weekends or holidays). Please adhere to professional email etiquette. 
 
@@ -51,7 +49,7 @@ We will rely on the [Section Notes](https://htmlpreview.github.io/?https://githu
 
 **Your Weekly Things to Do**: Please check the course website on BruinLearn for class policies, updates, deadlines, etc.
 + Before each lecture (on Tuesday or Thursday), complete the assigned reading and questions in the Coursekata (CK) textbook.   
-+ Tuesday: go to the lecture and complete the Jupyter Notebook assignment during class. Submit it at the end of class. Note that for 10/22 and 11/05, we have in-class quizzes instead.
++ Tuesday: go to the lecture and complete the Jupyter Notebook assignment during class. Submit it at the end of class. Note that for 10/29 and 11/12, we have in-class quizzes instead.
 + Thursday: go to the lecture and complete the Jupyter Notebook assignment during class. Submit it at the end of class.
 + Friday: attend the TA section if needed.
 + We also have two take-home quizzes (10/12 deadline for Quiz 1 and 12/2 deadline for Quiz 4).  
