@@ -1,9 +1,7 @@
 # Pol Sci 6 Discussion Section (Fridays)
 Materials for Pol Sci 6, Introduction to Data Analysis, offered in 2024 Fall at UCLA.
 
-> We have in-class Quiz 2 on October 29, covering Chapters 1-6! Check the practice quiz.
-
-> Recent due dates: JNB-Lecture 8 (Should be Lecture 7; covering CK6) + JNB-Lecture 7 (Should be Lecture 9; covering CK7) -> 10/25; CK7 -> 10/29; CK8 -> 11/5. 
+> JNB Lecture 11 due by 11.1!
 
 ## TA Section Notes
 We will rely on the [Section Notes](https://htmlpreview.github.io/?https://github.com/haotianchen/ps6/blob/main/notes.html) to go over class materials. 
