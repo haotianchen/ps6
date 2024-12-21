@@ -2,7 +2,10 @@
 title: "Pol Sci 6 Section Notes"
 author: "Barney Chen"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
 ---
 
 This class heavily relies on the interactive online textbook, CourseKata. To successfully run any code you learn in class, you need to load the `coursekata` package first. Remember to run this line of code at the top of any script you write in this class!!
@@ -12,7 +15,7 @@ library(coursekata) # run install.packages("coursekata") on a new machine
 
 Otherwise, you will get an error message that says `could not find function...`.
 
-# Part I - Exploratory Data Analysis
+# Part I - Exploratory Data Analysis {.tabset .tabset-fade .tabset-pills}
 
 ## Inspect Your Data
 
@@ -195,10 +198,10 @@ gf_point(log(income) ~ age, data = mydata) # creates a scatter plot of logged `i
 gf_jitter(income ~ age, data = mydata) # creates a jitter plot of `income` and `age`.
 ```
 
-# Part II - Regression Models
+# Part II - Regression Models {.tabset .tabset-fade .tabset-pills}
 
 ## Empty Model
-The simplest model is the empty model, where we use the mean of a quantitative variable to model its distribution. In a word form: `Income = Mean + Error`. In a general linear model form: $\text{Income}_i = b_0 + e_i$.  
+The simplest model is the empty model, where we use the mean of a quantitative variable to model its distribution. In a word form: `Income = Mean + Error`. In a general linear model form: $\text{Income}_i = b_0 + e_i$. DO NOT FORGET the error term $e_i$!!
 
 ```{r}
 # create a histogram of `income` and add a vertical line at the mean of `income`.
@@ -217,7 +220,11 @@ mydata$empty_predicted <- predict(empty_model)
 # check your model, it only has one intercept, which equals the mean of `income`. 
 empty_model
 mean(mydata$income)
+```
 
+### How far off are we?
+Let's check some statistics to evaluate the model. 
+```{r}
 # data_i = b_0 (mean) + error_i (residual)
 # to get the residuals
 mydata$empty_residuals <- resid(empty_model)
@@ -238,10 +245,11 @@ sd(mydata$income) # sd() function
 sqrt(var(mydata$income)) # SD = sqrt(variance), the square root of the variance
 ```
 
+
 ## Simple Linear Model
 The simple linear model is a regression model with one predictor. We refer to the X as the **independent (explanatory) variable** and Y as the **dependent (response)** variable.
 
-### Fit the Model
+### Fit the model
 First, let's explain variation in income using age, a continuous variable. In a word form: `Income = Age + Error`. In a general linear model form: $\text{Income}_i = b_0 + b_1*\text{Age}_i + e_i$ (plug in the estimated `b0` and `b1` we get).
 
 ```{r}
@@ -284,7 +292,7 @@ supernova(age_model) # ANOVA table for the age model
 * The 2nd column, `df`, refers to the **degrees of freedom**, which depends on the number of observations and variables. 
 * The 3rd column, `MS`, refers to the **mean square**. `MS` is calculated by dividing `SS` by `df`: for example, `MSE = SSE/df_Error`.
 
-### Compare two Models
+### Compare two models
 Let's compare the Age model and Gender model using PRE and F-ratio. Let's also print out the ANOVA table for the gender model. 
 
 ```{r}
@@ -337,17 +345,26 @@ confint(age_model, level = 0.99) # get the 99% CI of the age model
 From the first output, we are 95% confident that the true value of `b1` is between 428.5 and 479.7. It does not include 0, we may reject the null hypothesis with 95% confidence.
 
 ## Multivariate Model
-The multivariate model is a regression model with multiple predictors. For example, it makes sense to explain variation in income using both age and gender. In a word form: `Income = Age + Education + Error`. In a general linear model form: $\text{Income}_i = b_0 + b_1*\text{Age}_i + b_2*\text{Gender}_i + e_i$.
+The multivariate model is a regression model with multiple predictors. For example, it makes sense to explain variation in income using both age and gender. In a word form: `Income = Age + Gender + Error`. In a general linear model form: $\text{Income}_i = b_0 + b_1*\text{Age}_i + b_2*\text{Gender}_i + e_i$.
 
 ```{r}
 # explain income using age and education
 age_gender_model <- lm(income ~ age + gender, data = mydata) 
 summary(age_gender_model) 
+```
 
-# we get b1 for `age`, and b2 for `genderMale`. How should we interpret these coefficients? 
+So, in a GLM form, the model is: $\text{Income}_i = 21877.9 + 420.7*\text{Age}_i + 10911.1*\text{Gender}_i + e_i$. How should we interpret these coefficients? $b_1$ is the change in `income` per a one-unit change in `age` while holding gender fixed, and $b_2$ is the difference in `income` between male and female (the reference level) while holding age fixed. 
 
+```{r}
 # get the ANOVA table
 supernova(age_gender_model)
 ```
 
 Compared to the age model, the age+gender model has a lower F-ratio but a higher PRE. 
+
+### Interaction Term
+We can add an interaction term between `age` and `gender` to the model.
+```{r}
+age_gender_interaction <- lm(income ~ age*gender, data = mydata) 
+summary(age_gender_interaction) 
+```
